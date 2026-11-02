@@ -1,6 +1,7 @@
 /*
- * ARTSEY Paintbrush as a macropad. Edit this file, push, and GitHub Actions
- * builds a new .uf2. Positions are numbered 0-3 (top row) and 4-7 (bottom row).
+ * ARTSEY Paintbrush as a Figma macropad (macOS shortcuts). Edit this file,
+ * push, and GitHub Actions builds a new .uf2.
+ * Positions are numbered 0-3 (top row) and 4-7 (bottom row).
  *
  * SPDX-License-Identifier: MIT
  */
@@ -10,40 +11,50 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
 
-#define MACRO 0
-#define MEDIA 1
-#define BT    2
+#define FIGMA 0
+#define EDIT  1
+#define SYS   2
+
+// "balanced": holding a layer key and tapping another key counts as a hold
+// right away, so you don't have to wait out the tapping term.
+&lt {
+    flavor = "balanced";
+    tapping-term-ms = <200>;
+};
 
 / {
     keymap {
         compatible = "zmk,keymap";
 
-        macro_layer {
-            display-name = "Macro";
-            // ---------------------------------------
-            // |  F13      |  F14  |  F15  |  F16  |
-            // |  F17/MEDIA|  F18  |  F19  |  F20  |   hold bottom-left -> Media layer
-            // ---------------------------------------
+        figma_layer {
+            display-name = "Figma";
+            // -------------------------------------------------------------
+            // |  Undo  ⌘Z     |  Redo ⇧⌘Z  |  Zoom out ⌘-   |  Zoom in ⌘=   |
+            // |  Fit ⇧1/EDIT  |  Dup  ⌘D   |  Auto layout ⇧A |  Space (pan) |
+            // -------------------------------------------------------------
+            // Bottom-left: tap = zoom to fit, hold = Edit layer.
+            // Bottom-right: hold and drag to pan the canvas.
             bindings = <
-                &kp F13        &kp F14   &kp F15   &kp F16
-                &lt MEDIA F17  &kp F18   &kp F19   &kp F20
+                &kp LG(Z)          &kp LG(LS(Z))   &kp LG(MINUS)   &kp LG(EQUAL)
+                &lt EDIT LS(N1)    &kp LG(D)       &kp LS(A)       &kp SPACE
             >;
         };
 
-        media_layer {
-            display-name = "Media";
-            // ---------------------------------------
-            // |  Play/Pause |  Vol-  |  Vol+  |  Mute  |
-            // |  (held)     |  Prev  |  Next  |  BT    |   hold bottom-right too -> BT layer
-            // ---------------------------------------
+        edit_layer {
+            display-name = "Figma+";
+            // -------------------------------------------------------------------
+            // |  Copy props ⌥⌘C |  Paste props ⌥⌘V |  Ungroup ⇧⌘G |  Zoom sel ⇧2   |
+            // |  (held)         |  Group ⌘G        |  Component ⌥⌘K | UI ⌘\ / SYS  |
+            // -------------------------------------------------------------------
+            // Bottom-right: tap = show/hide UI, hold = System layer.
             bindings = <
-                &kp C_PP   &kp C_VOL_DN   &kp C_VOL_UP   &kp C_MUTE
-                &trans     &kp C_PREV     &kp C_NEXT     &mo BT
+                &kp LA(LG(C))   &kp LA(LG(V))   &kp LG(LS(G))   &kp LS(N2)
+                &trans          &kp LG(G)       &kp LA(LG(K))   &lt SYS LG(BSLH)
             >;
         };
 
-        bt_layer {
-            display-name = "BT";
+        sys_layer {
+            display-name = "System";
             // ---------------------------------------
             // |  BT 0   |  BT 1    |  BT 2       |  USB/BT toggle |
             // |  (held) |  BT clr  |  Bootloader |  (held)        |

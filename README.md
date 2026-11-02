@@ -12,16 +12,30 @@ nice!nano bootloader accepts.
 
 ## Layout
 
-Positions are 0-3 on the top row and 4-7 on the bottom row.
+Positions are 0-3 on the top row and 4-7 on the bottom row. Shortcuts are
+Figma's macOS defaults, so nothing needs binding on the computer side.
 
-| Layer | Top row | Bottom row |
-|---|---|---|
-| Macro (default) | F13 F14 F15 F16 | F17* F18 F19 F20 |
-| Media (hold F17) | Play/Pause, Vol-, Vol+, Mute | -, Prev, Next, BT* |
-| BT (hold F17 + bottom-right) | BT 0, BT 1, BT 2, USB/BT toggle | -, BT clear, Bootloader, - |
+**Figma (default)**
 
-`*` = hold for the next layer. F13-F20 do nothing on their own; bind them in
-macOS Shortcuts, Keyboard Maestro, BetterTouchTool, or per-app settings.
+| Undo `⌘Z` | Redo `⇧⌘Z` | Zoom out `⌘-` | Zoom in `⌘=` |
+|---|---|---|---|
+| Zoom to fit `⇧1` / hold: **Figma+** | Duplicate `⌘D` | Auto layout `⇧A` | Space (hold to pan) |
+
+**Figma+ (hold bottom-left)**
+
+| Copy properties `⌥⌘C` | Paste properties `⌥⌘V` | Ungroup `⇧⌘G` | Zoom to selection `⇧2` |
+|---|---|---|---|
+| (held) | Group `⌘G` | Create component `⌥⌘K` | Show/hide UI `⌘\` / hold: **System** |
+
+**System (hold bottom-left + bottom-right)**
+
+| BT 0 | BT 1 | BT 2 | USB/BT toggle |
+|---|---|---|---|
+| (held) | BT clear | Bootloader | (held) |
+
+The two dual-purpose keys send their shortcut on a tap and switch layer when
+held. They use the `balanced` hold-tap flavor: holding one and pressing another
+key switches layer immediately.
 
 ## Change the keymap
 
