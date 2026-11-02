@@ -1,0 +1,9 @@
+file_format: "1"
+id: paintbrush_pad
+name: ARTSEY Paintbrush Pad
+type: shield
+url: https://github.com/artseyio/zmk-artsey/tree/main/config/boards/shields/the_paintbrush
+requires: [pro_micro]
+features:
+  - keys
+  - display

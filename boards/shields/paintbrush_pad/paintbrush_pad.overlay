@@ -1,0 +1,73 @@
+/*
+ * ARTSEY "The Paintbrush" (KemoNine) used as a plain 2x4 macropad.
+ *
+ * Pin wiring taken from artseyio/zmk-artsey the_paintbrush_right.overlay and
+ * translated to current ZMK pro_micro pin numbers (A0..A3 = 18..21).
+ * Keys are direct-wired to ground, so active-low with internal pull-ups.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &physical_layout0;
+        zephyr,display = &oled;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+
+        /* Key order: top row left->right, then bottom row left->right.
+         * If your board types mirrored (F16 where F13 is expected), reverse this list. */
+        input-gpios
+            = <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* A3  top-left     */
+            , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* A2  top 2        */
+            , <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* A1  top 3        */
+            , <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* A0  top-right    */
+            , <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* D15 bottom-left  */
+            , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* D14 bottom 2     */
+            , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* D16 bottom 3     */
+            , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* D10 bottom-right */
+            ;
+    };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <8>;
+        rows = <1>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+            RC(0,4) RC(0,5) RC(0,6) RC(0,7)
+        >;
+    };
+
+    physical_layout0: physical_layout_0 {
+        compatible = "zmk,physical-layout";
+        display-name = "2x4";
+        transform = <&default_transform>;
+    };
+};
+
+&pro_micro_i2c {
+    status = "okay";
+
+    oled: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        width = <128>;
+        height = <32>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <31>;
+        segment-remap;
+        com-invdir;
+        com-sequential;
+        inversion-on;
+        prechargep = <0x22>;
+    };
+};

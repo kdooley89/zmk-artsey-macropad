@@ -1,0 +1,7 @@
+# GitHub Actions build matrix. Each entry becomes one .uf2 in the "firmware" artifact.
+# The nice!nano v2 is "nice_nano//zmk" (revision 2.0.0 is the default).
+include:
+  - board: nice_nano//zmk
+    shield: paintbrush_pad
+  - board: nice_nano//zmk
+    shield: settings_reset
