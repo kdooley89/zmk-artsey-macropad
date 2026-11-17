@@ -1,6 +1,7 @@
 /*
- * ARTSEY Paintbrush as a macropad. Edit this file, push, and GitHub Actions
- * builds a new .uf2. Positions are numbered 0-3 (top row) and 4-7 (bottom row).
+ * ARTSEY Paintbrush as a Claude Code macropad. Edit this file, push, and GitHub
+ * Actions builds a new .uf2. Positions are numbered 0-3 (top row) and 4-7
+ * (bottom row).
  *
  * SPDX-License-Identifier: MIT
  */
@@ -10,16 +11,102 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
 
-#define MACRO 0
-#define MEDIA 1
-#define BT    2
+#define CLAUDE 0
+#define FKEYS  1
+#define MEDIA  2
+#define BT     3
 
 / {
+    macros {
+        // Double Esc: Claude Code's "rewind / edit previous message".
+        // The pause keeps the terminal from reading the pair as Alt+Esc.
+        esc_esc: esc_esc {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <150>;
+            bindings = <&kp ESC &kp ESC>;
+        };
+
+        // Double-press Globe/Fn: starts macOS dictation (default shortcut).
+        dictate: dictate {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <100>;
+            bindings = <&kp GLOBE &kp GLOBE>;
+        };
+
+        // Type "/clear" and run it.
+        cmd_clear: cmd_clear {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&kp SLASH &kp C &kp L &kp E &kp A &kp R>
+                , <&macro_wait_time 100>
+                , <&kp RET>
+                ;
+        };
+
+        // Type "/compact" and run it.
+        cmd_compact: cmd_compact {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&kp SLASH &kp C &kp O &kp M &kp P &kp A &kp C &kp T>
+                , <&macro_wait_time 100>
+                , <&kp RET>
+                ;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        // Top-left + second key: /clear
+        combo_clear {
+            timeout-ms = <50>;
+            key-positions = <0 1>;
+            bindings = <&cmd_clear>;
+            layers = <CLAUDE>;
+        };
+
+        // Third + top-right key: /compact
+        combo_compact {
+            timeout-ms = <50>;
+            key-positions = <2 3>;
+            bindings = <&cmd_compact>;
+            layers = <CLAUDE>;
+        };
+
+        // Both top corners: switch between the Claude and F13-F20 layers
+        combo_fkeys {
+            timeout-ms = <50>;
+            key-positions = <0 3>;
+            bindings = <&tog FKEYS>;
+            layers = <CLAUDE FKEYS>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
-        macro_layer {
-            display-name = "Macro";
+        claude_layer {
+            display-name = "Claude";
+            // -------------------------------------------------------------
+            // |  Esc       |  Shift+Tab  |  Esc Esc  |  Dictate  |
+            // |  ^C/MEDIA  |  1 (yes)    |  2 (yes,  |  Enter    |
+            // |            |             |  always)  |           |
+            // -------------------------------------------------------------
+            // Esc: stop Claude. Shift+Tab: cycle normal/auto-accept/plan.
+            // Esc Esc: rewind. 1/2: answer a permission prompt.
+            // Tap bottom-left for Ctrl+C, hold it for the Media layer.
+            bindings = <
+                &kp ESC          &kp LS(TAB)   &esc_esc   &dictate
+                &lt MEDIA LC(C)  &kp N1        &kp N2     &kp RET
+            >;
+        };
+
+        fkey_layer {
+            display-name = "F-keys";
             // ---------------------------------------
             // |  F13      |  F14  |  F15  |  F16  |
             // |  F17/MEDIA|  F18  |  F19  |  F20  |   hold bottom-left -> Media layer
