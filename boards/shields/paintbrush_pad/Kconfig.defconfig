@@ -13,7 +13,40 @@ config I2C
 config SSD1306
     default y
 
+# Use our own screen (status_screen.c): status text while typing, an
+# animated critter when idle.
+choice ZMK_DISPLAY_STATUS_SCREEN
+    default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+endchoice
+
 endif # ZMK_DISPLAY
+
+if ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+
+# Same look and status widgets as ZMK's built-in screen.
+config LV_USE_THEME_MONO
+    default y
+
+config ZMK_WIDGET_LAYER_STATUS
+    default y
+
+config ZMK_WIDGET_BATTERY_STATUS
+    default y
+
+config ZMK_WIDGET_OUTPUT_STATUS
+    default y
+
+config LV_FONT_MONTSERRAT_16
+    default y
+
+choice LV_FONT_DEFAULT
+    default LV_FONT_DEFAULT_MONTSERRAT_16
+endchoice
+
+config LV_Z_MEM_POOL_SIZE
+    default 8192
+
+endif # ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 
 if LVGL
 
